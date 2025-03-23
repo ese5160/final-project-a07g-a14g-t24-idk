@@ -24,9 +24,7 @@
 
  ![1742673521412](image/A07G_README/1742673521412.png)
 
-
 ## 2. Understanding the Starter Code
-
 
 1. **What does “InitializeSerialConsole()” do? In said function, what is “cbufRx” and “cbufTx”? What type of data structure is it?**
    The `InitializeSerialConsole()` function initializes the serial console by initializing two circular buffers, `cbufRx` and `cbufTx`, using the `circular_buf_init()` function with `rxCharacterBuffer` and `txCharacterBuffer` respectively. It also configures the USART using `configure_usart()`, registers the read and write callbacks using `configure_usart_callbacks()`, sets the interrupt priority for `SERCOM4_IRQn`, and starts a continuous reading process using `usart_read_buffer_job()`. `cbufRx` is a circular buffer handle for receiving characters, and `cbufTx` is a circular buffer handle for transmitting characters.
@@ -48,6 +46,12 @@
    ![1742681166227](image/A07G_README/1742681166227.png)
 9. **What is done on the function “startStasks()” in main.c? How many threads are started?**
    The function `StartTasks()` (note the capitalization in the code) is defined in `main.c`. This function first prints the heap size before starting tasks. Then, it creates one FreeRTOS task using `xTaskCreate()`: `vCommandConsoleTask` with the name "CLI\_TASK". After creating this task, it prints the heap size again. Therefore, based on the provided `main.c` code, **one thread** is explicitly started within the `StartTasks()` function.
+
+
+
+## 4
+
+Based on the `configure_usart()` function in `SerialConsole.c`, the UART communication is set up using the `EDBG_CDC_MODULE`. The specific pins used for TX and RX are defined by `EDBG_CDC_SERCOM_MUX_SETTING`, `EDBG_CDC_SERCOM_PINMUX_PAD0`, and `EDBG_CDC_SERCOM_PINMUX_PAD1` .
 
 
 
