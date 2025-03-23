@@ -49,10 +49,29 @@
 
 
 
-## 4
+## 4. Wiretap the convo!
 
-Based on the `configure_usart()` function in `SerialConsole.c`, the UART communication is set up using the `EDBG_CDC_MODULE`. The specific pins used for TX and RX are defined by `EDBG_CDC_SERCOM_MUX_SETTING`, `EDBG_CDC_SERCOM_PINMUX_PAD0`, and `EDBG_CDC_SERCOM_PINMUX_PAD1` .
+1. Based on the SerialConsole.c code and the SAMW25_XPLAINED_PRO.h file, the UART communication for the EDBG CDC interface uses SERCOM4. The specific pins are defined by:
+   EDBG_CDC_SERCOM_PINMUX_PAD2 which corresponds to the Transmit (TX) line,PB10_SERCOM_4. EDBG_CDC_SERCOM_PINMUX_PAD3 which corresponds to the Receive (RX) line.PB11_SERCOM4.
+2. From the following figure, we can see we need attach the pin PB10 and PB11.
+
+![1742764585479](image/A07G_README/1742764585479.png)
+
+3. 
+
+![1742765077883](image/A07G_README/1742765077883.png)
+
+### 2.**photo of your hardware connections**
+
+![1742764411300](image/A07G_README/1742764411300.png)
 
 
+### 3.**screenshot of the decoded message**
 
-<style>#mermaid-1742681127255{font-family:sans-serif;font-size:16px;fill:#333;}#mermaid-1742681127255 .error-icon{fill:#552222;}#mermaid-1742681127255 .error-text{fill:#552222;stroke:#552222;}#mermaid-1742681127255 .edge-thickness-normal{stroke-width:2px;}#mermaid-1742681127255 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1742681127255 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1742681127255 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1742681127255 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1742681127255 .marker{fill:#333333;}#mermaid-1742681127255 .marker.cross{stroke:#333333;}#mermaid-1742681127255 svg{font-family:sans-serif;font-size:16px;}#mermaid-1742681127255 .label{font-family:sans-serif;color:#333;}#mermaid-1742681127255 .label text{fill:#333;}#mermaid-1742681127255 .node rect,#mermaid-1742681127255 .node circle,#mermaid-1742681127255 .node ellipse,#mermaid-1742681127255 .node polygon,#mermaid-1742681127255 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#mermaid-1742681127255 .node .label{text-align:center;}#mermaid-1742681127255 .node.clickable{cursor:pointer;}#mermaid-1742681127255 .arrowheadPath{fill:#333333;}#mermaid-1742681127255 .edgePath .path{stroke:#333333;stroke-width:1.5px;}#mermaid-1742681127255 .flowchart-link{stroke:#333333;fill:none;}#mermaid-1742681127255 .edgeLabel{background-color:#e8e8e8;text-align:center;}#mermaid-1742681127255 .edgeLabel rect{opacity:0.5;background-color:#e8e8e8;fill:#e8e8e8;}#mermaid-1742681127255 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#mermaid-1742681127255 .cluster text{fill:#333;}#mermaid-1742681127255 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:sans-serif;font-size:12px;background:hsl(80,100%,96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1742681127255:root{--mermaid-font-family:sans-serif;}#mermaid-1742681127255:root{--mermaid-alt-font-family:sans-serif;}#mermaid-1742681127255 flowchart{fill:apa;}</style>
+
+![1742765185317](image/A07G_README/1742765185317.png)
+
+
+### 4.**capture file**
+
+The usart.sal is our capture file.
