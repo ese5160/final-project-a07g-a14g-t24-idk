@@ -8,6 +8,73 @@
 
 ## 1. Software Architecture
 
+### 1. Hardware Requirements Specification (HRS)
+
+5.1	Overview:
+
+The hardware for the Tennis Swing Trajectory Tracker is designed to provide precise data acquisition, efficient processing, and user-friendly interaction. It includes a motion sensor for tracking, a microcontroller for processing and communication, an LCD for real-time feedback, and an SD card for data storage, all integrated into a compact PCB.
+
+5.2	Definitions, Abbreviations
+
+* **ICM-20948**: A 9-axis motion sensor combining accelerometer, gyroscope, and magnetometer.
+* **ST7735R**: A full-color LCD module for displaying metrics and simple trajectory simulations.
+* **SAMW25**: A microcontroller with built-in Wi-Fi capabilities for processing and data transmission.
+* **SD Card**: A removable storage module for saving and retrieving sensor data.
+* **Switch Button**: A hardware component to pause sensor recording and activate review mode.
+* **PCB**: Printed Circuit Board, used to integrate all hardware components.
+* **Li-Ion Battery**: A single-cell battery providing the primary power source.
+* **ON/OFF Button**: A hardware component to turn on/off the device.
+
+5.3	Functionality
+
+| **Requirement ID** | **Requirement Description**                                                                         | **Performance Metric**              |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| HRS 01                   | The system shall use the ICM-20948 sensorfor 9-axis motion tracking.                                      | Sensor data sampled at up to 1.1 kHz.     |
+| HRS 02                   | The system shall display metrics in real-time using the ST7735R LCD.                                     | Display refresh rate ≥ 30 FPS.           |
+| HRS 03                   | The system shall use the SAMW25 microcontroller to manage data processing and Wi-Fi communication.       | Data transmission latency ≤ 100 ms.      |
+| HRS 04                   | The hardware shall be powered by a single-cell Li-Ion battery(3.7V nominal voltage).                     | Battery life ≥ 4 hours.                  |
+| HRS 05                   | All components shall be integrated into a custom PCB for compact and portable design.                     | PCB dimensions ≤ 500x500 mm.             |
+| HRS 06                   | The system shall include Wi-Fi functionality for data transmission via the SAMW25.                        | Wi-Fi range ≥ 10 meters indoors.         |
+| HRS 07                   | The hardware shall include an SD card slot for data storage and retrieval.                               | Data write speed ≥ 3 MB/s.              |
+| HRS 08                   | The system shall include a switch button to pause sensor recording and activate review mode on the LCD.  | Button response time ≤ 100 ms.           |
+| HRS 09                   | The PCB shall include appropriate voltage regulators to provide 3.3V and 5V as needed for all components. | Voltage output variation ≤ ±0.1V.       |
+| HRS 10                   | The hardware shall withstand typical tennis swings without detachment or damage.                          | Withstand forces up to 300g acceleration. |
+
+### 2. Software Requirements Specification (SRS)
+
+6.1 Overview
+
+The software for the Tennis Swing Trajectory Tracker processes data from the motion sensor, manages user interactions, and provides real-time feedback on the LCD. It supports pausing data recording, simulating swing trajectories, and storing swing data on an SD card for later analysis. The software also enables wireless data transmission for advanced analysis on external devices.
+
+6.2 Users
+
+**Tennis players**, looking to improve their swing mechanics.
+**Coaches**, who want detailed motion data to provide targeted feedback.
+**Recreational users**, interested in visualizing and sharing their swing trajectories.
+
+6.3 Definitions, Abbreviations
+
+* **ICM-20948**: The motion sensor providing acceleration, angular velocity, and magnetic field data.
+* **LCD**: The ST7735R display module for real-time feedback.
+* **SAMW25**: The microcontroller responsible for data processing and Wi-Fi communication.
+* **SD Card**: External storage for swing data.
+* **Switch Button**: A hardware interface for pausing and resuming data recording.
+
+6.4 Functionality
+
+| **Requirement ID** | **Functionality Description**                                                                         | **Performance Metric**               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| SRS 01                   | The system shall collect and process motion data from the ICM-20948 sensor.                                 | Data processing within 100 ms.             |
+| SRS 02                   | The software shall display real-time metrics and trajectory simulations on the ST7735R LCD.                 | Metrics updated at 30 FPS.                 |
+| SRS 03                   | The system shall pause data recording and display the last recorded data when the switch button is pressed. | Pause functionality response ≤ 100 ms.    |
+| SRS 04                   | The software shall store swing data on an SD card for later retrieval.                                      | Write speed ≥ 5 MB/s.                     |
+| SRS 05                   | The system shall transmit processed data wirelessly using the SAMW25 microcontroller.                       | Wi-Fi latency ≤ 100 ms.                  |
+| SRS 06                   | The software shall retrieve and display previously stored swing data from the SD card.                      | Data retrieval within 200 ms.              |
+| SRS 07                   | The software shall indicate system status via the LCD.                                                      | LCD updates within 1 second.               |
+| SRS 08                   | The software shall simulate the simple swing trajectory on LCD after click the button.                     | LCD update the trajectory within 3 second |
+| SRS 09                   | The computer software shall simulate the 3D version of swing trajectory.                                  | Simulation within 1 mins                   |
+
+
 ![1742673035756](image/A07G_README/1742673035756.png "System Tasks OverView")
 
 ![1742673317865](image/A07G_README/1742673317865.png)
