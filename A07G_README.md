@@ -47,8 +47,6 @@
 9. **What is done on the function “startStasks()” in main.c? How many threads are started?**
    The function `StartTasks()` (note the capitalization in the code) is defined in `main.c`. This function first prints the heap size before starting tasks. Then, it creates one FreeRTOS task using `xTaskCreate()`: `vCommandConsoleTask` with the name "CLI\_TASK". After creating this task, it prints the heap size again. Therefore, based on the provided `main.c` code, **one thread** is explicitly started within the `StartTasks()` function.
 
-
-
 ## 4. Wiretap the convo!
 
 1. Based on the SerialConsole.c code and the SAMW25_XPLAINED_PRO.h file, the UART communication for the EDBG CDC interface uses SERCOM4. The specific pins are defined by:
@@ -57,21 +55,20 @@
 
 ![1742764585479](image/A07G_README/1742764585479.png)
 
-3. 
-
 ![1742765077883](image/A07G_README/1742765077883.png)
 
 ### 2.**photo of your hardware connections**
 
 ![1742764411300](image/A07G_README/1742764411300.png)
 
-
 ### 3.**screenshot of the decoded message**
-
 
 ![1742765185317](image/A07G_README/1742765185317.png)
 
-
-### 4.**capture file**
+### 4. **Capture File**
 
 The usart.sal is our capture file.
+
+## 6. **Add CLI commands**
+
+video link: [https://youtu.be/FAAj1BERWvg?si=ajbn2K48HhYb-9YP]()
