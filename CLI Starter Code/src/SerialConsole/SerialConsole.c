@@ -155,15 +155,15 @@ void LogMessage(enum eDebugLogLevels level, const char *format, ...)
 {
     // Todo: Implement Debug Logger
 	// More detailed descriptions are in header file
-	if(level<currentDebugLevel) return;
+	if(level<currentDebugLevel) return; // Filter non-important messages
 	
 	char buffer[256]; // buffer
-	va_list args;
+	va_list args; // Create Variable list
 	va_start(args, format);
-	vsprintf(buffer,format,args);
+	vsprintf(buffer,format,args);// PUt all the args as format into buffer
 	va_end(args);
 	
-	SerialConsoleWriteString(buffer);
+	SerialConsoleWriteString(buffer); // Output the format buffer to serial console
 	
 }
 
@@ -234,10 +234,10 @@ void usart_read_callback(struct usart_module *const usart_module)
 {
 	// ToDo: Complete this function 
 	circular_buf_put(cbufRx, (uint8_t)latestRx);  // put the char into circular buffer
-	usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);  
+	usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);  //Re-initiate the read for the next incoming byte
 
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR(xRxSemaphore, &xHigherPriorityTaskWoken);
+	xSemaphoreGiveFromISR(xRxSemaphore, &xHigherPriorityTaskWoken); // Give the semaphore from ISR
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);  // Increase the priority to deal with the serial command
 	
 }

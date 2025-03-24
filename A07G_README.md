@@ -8,7 +8,7 @@
 
 ## 1. Software Architecture
 
-### 1. Hardware Requirements Specification (HRS)
+### Hardware Requirements Specification (HRS)
 
 5.1	Overview:
 
@@ -40,7 +40,7 @@ The hardware for the Tennis Swing Trajectory Tracker is designed to provide prec
 | HRS 09                   | The PCB shall include appropriate voltage regulators to provide 3.3V and 5V as needed for all components. | Voltage output variation ≤ ±0.1V.       |
 | HRS 10                   | The hardware shall withstand typical tennis swings without detachment or damage.                          | Withstand forces up to 300g acceleration. |
 
-### 2. Software Requirements Specification (SRS)
+### Software Requirements Specification (SRS)
 
 6.1 Overview
 
@@ -74,6 +74,7 @@ The software for the Tennis Swing Trajectory Tracker processes data from the mot
 | SRS 08                   | The software shall simulate the simple swing trajectory on LCD after click the button.                     | LCD update the trajectory within 3 second |
 | SRS 09                   | The computer software shall simulate the 3D version of swing trajectory.                                  | Simulation within 1 mins                   |
 
+### Flow Charts
 
 ![1742673035756](image/A07G_README/1742673035756.png "System Tasks OverView")
 
@@ -114,6 +115,30 @@ The software for the Tennis Swing Trajectory Tracker processes data from the mot
 9. **What is done on the function “startStasks()” in main.c? How many threads are started?**
    The function `StartTasks()` (note the capitalization in the code) is defined in `main.c`. This function first prints the heap size before starting tasks. Then, it creates one FreeRTOS task using `xTaskCreate()`: `vCommandConsoleTask` with the name "CLI\_TASK". After creating this task, it prints the heap size again. Therefore, based on the provided `main.c` code, **one thread** is explicitly started within the `StartTasks()` function.
 
+## 3. Debug Logger Module
+
+See the `SerialConsole.c`
+
+```
+void LogMessage(enum eDebugLogLevels level, const char *format, ...)
+{
+    // Todo: Implement Debug Logger
+	// More detailed descriptions are in header file
+	if(level<currentDebugLevel) return; // Filter non-important messages
+
+	char buffer[256]; // buffer
+	va_list args; // Create Variable list
+	va_start(args, format);
+	vsprintf(buffer,format,args);// Put all the args as format into buffer
+	va_end(args);
+
+	SerialConsoleWriteString(buffer); // Output the format buffer to serial console
+
+}
+```
+
+
+
 ## 4. Wiretap the convo!
 
 1. Based on the SerialConsole.c code and the SAMW25_XPLAINED_PRO.h file, the UART communication for the EDBG CDC interface uses SERCOM4. The specific pins are defined by:
@@ -124,18 +149,53 @@ The software for the Tennis Swing Trajectory Tracker processes data from the mot
 
 ![1742765077883](image/A07G_README/1742765077883.png)
 
-### 2.**photo of your hardware connections**
+### **Photo of Hardware Connections**
 
 ![1742764411300](image/A07G_README/1742764411300.png)
 
-### 3.**screenshot of the decoded message**
+### **screenshot of the decoded message**
 
 ![1742765185317](image/A07G_README/1742765185317.png)
 
-### 4. **Capture File**
+### **Capture File**
 
-The usart.sal is our capture file.
+See the usart.sal file in github
+
+## 5.  Complete the CLI
+
+See the `SerialConsole.c` and` CliThread.c`
+
+```
+static void FreeRTOS_read(char *character)
+{
+    // ToDo: Complete this function
+    if (xSemaphoreTake(xRxSemaphore, portMAX_DELAY) == pdTRUE) // read until receive a character 
+    {
+	    //read the character
+	    SerialConsoleReadCharacter((uint8_t *)character);
+    }
+}
+
+```
+
+```
+void usart_read_callback(struct usart_module *const usart_module)
+{
+	// ToDo: Complete this function 
+	circular_buf_put(cbufRx, (uint8_t)latestRx);  // put the char into circular buffer
+	usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);  //Re-initiate the read for the next incoming byte
+
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	xSemaphoreGiveFromISR(xRxSemaphore, &xHigherPriorityTaskWoken); // Give the semaphore from ISR
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);  // Increase the priority to deal with the serial command
+
+}
+```
 
 ## 6. **Add CLI commands**
+
+See the ` CliThread.c`
+
+Function: `CLI_Version` and `CLI_Ticks`
 
 video link: [https://youtu.be/FAAj1BERWvg?si=ajbn2K48HhYb-9YP]()
