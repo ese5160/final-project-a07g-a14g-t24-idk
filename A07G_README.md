@@ -94,26 +94,18 @@ The software for the Tennis Swing Trajectory Tracker processes data from the mot
 
 ## 2. Understanding the Starter Code
 
-1. **What does “InitializeSerialConsole()” do? In said function, what is “cbufRx” and “cbufTx”? What type of data structure is it?**
-   The `InitializeSerialConsole()` function initializes the serial console by initializing two circular buffers, `cbufRx` and `cbufTx`, using the `circular_buf_init()` function with `rxCharacterBuffer` and `txCharacterBuffer` respectively. It also configures the USART using `configure_usart()`, registers the read and write callbacks using `configure_usart_callbacks()`, sets the interrupt priority for `SERCOM4_IRQn`, and starts a continuous reading process using `usart_read_buffer_job()`. `cbufRx` is a circular buffer handle for receiving characters, and `cbufTx` is a circular buffer handle for transmitting characters.
-2. **How are “cbufRx” and “cbufTx” initialized? Where is the library that defines them (please list the \*C file they come from).**
-   `cbufRx` is initialized by calling `circular_buf_init((uint8_t *)rxCharacterBuffer, RX_BUFFER_SIZE)`, and `cbufTx` is initialized by calling `circular_buf_init((uint8_t *)txCharacterBuffer, TX_BUFFER_SIZE)`. Based on common practices and the function name, the library that defines `circular_buf_init` and the `cbuf_handle_t` type is likely located in a file named `circular_buffer.c`, although this is not explicitly stated in the provided `SerialConsole.c` file.
-3. **Where are the character arrays where the RX and TX characters are being stored at the end? Please mention their name and size.**
-   The character arrays where the RX and TX characters are stored are `rxCharacterBuffer` with a size of `RX_BUFFER_SIZE` (defined as 512 bytes) and `txCharacterBuffer` with a size of `TX_BUFFER_SIZE` (defined as 512 bytes).
-4. **Where are the interrupts for UART character received and UART character sent defined?**
-   The code sets the priority for the `SERCOM4_IRQn` interrupt, which is the interrupt associated with the SERCOM4 peripheral used for UART communication. The specific definition of the interrupt handlers would be in the microcontroller's startup files or within the SERCOM driver implementation. The callbacks `usart_read_callback` and `usart_write_callback` are registered for the `USART_CALLBACK_BUFFER_RECEIVED` and `USART_CALLBACK_BUFFER_TRANSMITTED` events, respectively, in the `configure_usart_callbacks()` function.
-5. **What are the callback functions that are called when: A character is received? (RX) A character has been sent? (TX)**
-   When a character is received (RX), the `usart_read_callback` function is registered to be called. When a character has been sent (TX), the `usart_write_callback` function is registered to be called.
-6. **Explain what is being done on each of these two callbacks and how they relate to the cbufRx and cbufTx buffers.**
-   The `usart_read_callback` function is intended to handle the reception of characters. The comment `// ToDo: Complete this function` indicates that the logic to store the received character (likely `latestRx`) into the `cbufRx` buffer needs to be implemented. The `usart_write_callback` function is called when the transmission of a buffer is complete. It checks if there are more characters in the `cbufTx` buffer using `circular_buf_get()`. If there are more characters, it gets the next character and initiates its transmission using `usart_write_buffer_job()`.
-7. **Draw a diagram that explains the program flow for UART receive – starting with the user typing a character and ending with how that character ends up in the circular buffer “cbufRx”. Please make reference to specific functions in the starter code.**
 
-   ![1742681146871](image/A07G_README/1742681146871.png)
-8. **Draw a diagram that explains the program flow for the UART transmission – starting from a string added by the program to the circular buffer “cbufTx” and ending on characters being shown on the screen of a PC (On Teraterm, for example). Please make reference to specific functions in the starter code.**
 
-   ![1742681166227](image/A07G_README/1742681166227.png)
-9. **What is done on the function “startStasks()” in main.c? How many threads are started?**
-   The function `StartTasks()` (note the capitalization in the code) is defined in `main.c`. This function first prints the heap size before starting tasks. Then, it creates one FreeRTOS task using `xTaskCreate()`: `vCommandConsoleTask` with the name "CLI\_TASK". After creating this task, it prints the heap size again. Therefore, based on the provided `main.c` code, **one thread** is explicitly started within the `StartTasks()` function.
+1. The InitializeSerialConsole() function initializes the serial communication for the CLI and Debug Logger by setting up the UART to operate at 115200 8N1, configuring it using configure_usart(), and registering callback functions for UART events with configure_usart_callbacks(); within this function, cbufRx and cbufTx are circular buffer handlers, which are pointers to the circular_buf_t structure defined in circular_buffer.c, representing a circular buffer data structure used for asynchronous read and write operations.
+2. cbufRx and cbufTx are initialized by calling the circular_buf_init() function, with cbufRx using the rxCharacterBuffer and its size RX_BUFFER_SIZE, and cbufTx using the txCharacterBuffer and TX_BUFFER_SIZE; the library that defines circular_buf_init() and the circular buffer structure is located in the circular_buffer.c file.
+3. The character arrays where the RX and TX characters are stored are named rxCharacterBuffer and txCharacterBuffer, respectively, and both have a size of 512 bytes, as defined by the RX_BUFFER_SIZE and TX_BUFFER_SIZE macros in SerialConsole.c.
+4. The interrupts for UART character received and sent are defined in the startup_samd21.c file within the interrupt vector table, where the SERCOM4_Handler is mapped to the SERCOM4 interrupt;
+5. Based on the starter code, the callback function that is called when a character is received (RX) is usart_read_callback. The callback function that is called when a character has been sent (TX) is usart_write_callback.
+6. The usart_read_callback function is intended to be executed when the UART hardware receives a character. Its primary role is to take the received character and store it in the receive circular buffer, cbufRx, so that it can be processed later by other parts of the system, such as the command-line interface (CLI) thread. The A07G Exploring the CLI S25.docx file notes that this callback needs to be implemented to store incoming characters in a ring buffer for the CLI thread to use. On the other hand, the usart_write_callback function is called when the UART finishes transmitting a character. Its function is to check if there are more characters waiting to be sent in the transmit circular buffer, cbufTx. If cbufTx is not empty, this callback retrieves the next character from it and initiates the UART transmission process for that character, ensuring a continuous flow of data being sent out.
+7. ![img](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc6X3cq-TrtYXORKRub1A0ppCU6MT-McWHTxuSGlmhjjMzkiqz0ldvbNfSM405E7LTxte9OAhoeaxkgMEQJO8Ob6dR-jzNuIVJaNkJ7ns3Bes95dkuGAs6cF9WwEJMPtJWxudZACw?key=FNcE5k3q_UBPL2356O160tvR).
+8. ![img](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdqRC0R6pbJyTqQE_VJNcOa2QafnWciIPRgKaK4fl8RBQbAfiGIsgKh-A_SQBO9EuNyDER44zXFqh7pKxxVD0W5Y-JaYI8I9KHLgzxyYJGDMZmFxddEffM4_tPDtjLfM6q-lgUgnQ?key=FNcE5k3q_UBPL2356O160tvR).
+9. The StartTasks() function in main.c is responsible for initializing application tasks. In the provided code, it initializes one thread by calling the FreeRTOS function xTaskCreate() to create a task named "CLI_TASK" that executes the vCommandConsoleTask function.
+
 
 ## 3. Debug Logger Module
 
@@ -136,8 +128,6 @@ void LogMessage(enum eDebugLogLevels level, const char *format, ...)
 
 }
 ```
-
-
 
 ## 4. Wiretap the convo!
 
@@ -163,7 +153,7 @@ See the usart.sal file in github
 
 ## 5.  Complete the CLI
 
-See the `SerialConsole.c` and` CliThread.c`
+See the `SerialConsole.c` and ` CliThread.c`
 
 ```
 static void FreeRTOS_read(char *character)
